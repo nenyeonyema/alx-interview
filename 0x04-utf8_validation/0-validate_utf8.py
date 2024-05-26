@@ -1,4 +1,6 @@
 #!/usr/bin/python3
+
+
 def validUTF8(data):
     def is_valid_byte(byte):
         return 0 <= byte <= 255
