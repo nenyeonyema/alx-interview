@@ -11,8 +11,6 @@ def print_usage():
 
 def solve_nqueens(N):
     """ Solves the nQueens """
-
-
     def is_safe(board, row, col):
         """ Check this row on left side """
         for i in range(col):
