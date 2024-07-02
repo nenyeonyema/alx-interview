@@ -33,7 +33,9 @@ def isWinner(x, nums):
     else:
         return None
 
+
 def sieve(n):
+    """ seives out prime numbers in n """
     is_prime = [True] * (n + 1)
     is_prime[0] = is_prime[1] = False
     
