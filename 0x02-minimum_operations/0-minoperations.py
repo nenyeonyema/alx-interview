@@ -1,22 +1,26 @@
 #!/usr/bin/python3
-""" Minumum Operations """
+"""
+Minimum Operations
+"""
 
 
 def minOperations(n):
     """
-    Calculate the fewest number of operations
-    needed to result in exactly n H characters
+    Calculates the minimum number of operations needed to achieve
+    exactly n H characters.
     """
     if n <= 1:
         return 0
 
-    dp = [float('inf')] * (n + 1)
+    # The number of operations
+    operations = 0
+    # Starting with a single 'H', count current characters
+    current_chars = 1
 
-    # Base cases
-    dp[1] = 0
+    # Factorize n to determine optimal copy and paste strategy
+    for factor in range(2, n + 1):
+        while n % factor == 0:
+            operations += factor
+            n //= factor
 
-    for i in range(2, n + 1):
-        for j in range(1, i):
-            if i % j == 0:
-                dp[i] = min(dp[i], dp[j] + i // j)
-    return dp[n]
+    return operations
