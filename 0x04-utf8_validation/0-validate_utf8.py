@@ -1,43 +1,48 @@
 #!/usr/bin/python3
-""" UTF8 Validation """
+"""
+UTF-8 Validation
+"""
 
 
 def validUTF8(data):
-    """ UTF8 Validation """
+    """
+    Determines if a given data set represents a valid UTF-8 encoding.
+    Args:
+        data: A list of integers representing the data set.
+    Returns:
+        True if data is a valid UTF-8 encoding, else False.
+    """
 
+    # Number of bytes in the current UTF-8 character
+    n_bytes = 0
 
-    def is_valid_byte(byte):
-        """validate byte """
-        return 0 <= byte <= 255
+    # Mask to check if the most significant bit is set or not
+    mask1 = 1 << 7
 
-    n = len(data)
-    i = 0
+    # Mask to check if the second most significant bit is set or not
+    mask2 = 1 << 6
+    for num in data:
 
-    while i < n:
-        byte = data[i]
-        if not is_valid_byte(byte):
-            return False
+        # Get the number of set most significant bits in the byte if
+        # this is the starting byte of an UTF-8 character.
+        mask = 1 << 7
+        if n_bytes == 0:
+            while mask & num:
+                n_bytes += 1
+                mask = mask >> 1
 
-        # Determine the number of bytes in this character
-        num_bytes = 0
-        if (byte >> 7) == 0:  # 1-byte character
-            num_bytes = 1
-        elif (byte >> 5) == 0b110:  # 2-byte character
-            num_bytes = 2
-        elif (byte >> 4) == 0b1110:  # 3-byte character
-            num_bytes = 3
-        elif (byte >> 3) == 0b11110:  # 4-byte character
-            num_bytes = 4
-        else:
-            return False
+            # 1 byte characters
+            if n_bytes == 0:
+                continue
 
-        if i + num_bytes > n:
-            return False
-
-        for j in range(1, num_bytes):
-            if (data[i + j] >> 6) != 0b10:
+            # Invalid scenarios according to the rules of the problem.
+            if n_bytes == 1 or n_bytes > 4:
                 return False
-
-        i += num_bytes
-
-    return True
+        else:
+            # If this byte is a part of an existing UTF-8 character, then we
+            # simply have to look at the two most significant bits and we make
+            # use of the masks we defined before.
+            if not (num & mask1 and not (num & mask2)):
+                return False
+        n_bytes -= 1
+    return n_bytes == 0
