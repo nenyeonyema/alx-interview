@@ -1,26 +1,57 @@
 #!/usr/bin/python3
-""" Prime Number game """
+"""
+Module: 0-prime_game
+
+Contains a function to determine the winner of the prime number game.
+"""
+
+
+def sieve(n):
+    """ Use the Sieve of Eratosthenes to find all primes <= n """
+    is_prime = [True] * (n + 1)
+    is_prime[0] = is_prime[1] = False
+    p = 2
+    while p * p <= n:
+        if is_prime[p]:
+            for i in range(p * p, n + 1, p):
+                is_prime[i] = False
+        p += 1
+    return [p for p in range(n + 1) if is_prime[p]]
+
+
+def count_primes_up_to(n, primes):
+    """ Count the number of primes <= n """
+    count = 0
+    for prime in primes:
+        if prime > n:
+            break
+        count += 1
+    return count
 
 
 def isWinner(x, nums):
-    """ returns the winner of the game
-    where x is the number of rounds and
-    nums is an array of n values
     """
-    if x < 1 or not nums:
+    Determines the winner of the prime number game.
+
+    Args:
+    - x (int): The number of rounds.
+    - nums (list of int): The list of n values for each round.
+
+    Returns:
+    - str: The name of the player that won the most rounds.
+    - If the winner cannot be determined, return None.
+    """
+    if not nums or x < 1:
         return None
 
     max_num = max(nums)
     primes = sieve(max_num)
+
     maria_wins = 0
     ben_wins = 0
 
     for n in nums:
-        if n == 1:
-            ben_wins += 1
-            continue
-
-        prime_count = sum(primes[2:n+1])
+        prime_count = count_primes_up_to(n, primes)
         if prime_count % 2 == 0:
             ben_wins += 1
         else:
@@ -32,15 +63,3 @@ def isWinner(x, nums):
         return "Ben"
     else:
         return None
-
-
-def sieve(n):
-    """ seives out prime numbers in n """
-    is_prime = [True] * (n + 1)
-    is_prime[0] = is_prime[1] = False
-    
-    for start in range(2, int(n**0.5) + 1):
-        if is_prime[start]:
-            for multiple in range(start*start, n + 1, start):
-                is_prime[multiple] = False
-    return is_prime
